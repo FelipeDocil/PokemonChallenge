@@ -1,0 +1,39 @@
+PODS:
+  - Nimble (8.0.4)
+  - Quick (2.2.0)
+  - SnapshotTesting (1.6.0)
+  - SnapshotTesting-Nimble (0.2.0):
+    - Nimble
+    - SnapshotTesting (= 1.6.0)
+
+DEPENDENCIES:
+  - Nimble (= 8.0.4)
+  - Quick (= 2.2.0)
+  - SnapshotTesting (= 1.6.0)
+  - SnapshotTesting-Nimble (from `https://github.com/FelipeDocil/swift-snapshot-testing-nimble.git`, branch `master`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Nimble
+    - Quick
+    - SnapshotTesting
+
+EXTERNAL SOURCES:
+  SnapshotTesting-Nimble:
+    :branch: master
+    :git: https://github.com/FelipeDocil/swift-snapshot-testing-nimble.git
+
+CHECKOUT OPTIONS:
+  SnapshotTesting-Nimble:
+    :commit: 5c1898ecd320572afdfcf933e965389fa1283e3a
+    :git: https://github.com/FelipeDocil/swift-snapshot-testing-nimble.git
+
+SPEC CHECKSUMS:
+  Nimble: 18d5360282923225d62b09d781f63abc1a0111fc
+  Quick: 7fb19e13be07b5dfb3b90d4f9824c855a11af40e
+  SnapshotTesting: 9f478335073a830eafb7dc1fcd526c5e90143991
+  SnapshotTesting-Nimble: e6aacec9c48882cd6068052c551c66ab1d604009
+
+PODFILE CHECKSUM: a2a7eb0f759f31213a944a486a8eec9e3edb5566
+
+COCOAPODS: 1.7.5

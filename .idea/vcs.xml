@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/Consumer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/CwlCatchException" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/CwlPreconditionTesting" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/Logger" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/Nimble" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/PackageConfig" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/PathKit" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/Quick" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/Quick/Externals/Nimble" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/Rocket" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/Spectre" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/Stencil" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/SwiftGherkin" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/SwiftShell" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/TestSpy" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/Yams" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/capriccio" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/swift-llbuild" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/swift-package-manager" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.build/checkouts/swift-snapshot-testing" vcs="Git" />
+  </component>
+</project>
