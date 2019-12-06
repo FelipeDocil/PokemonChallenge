@@ -20,6 +20,7 @@ enum Arguments: String {
         case singlePage
         case multiplePages
         case successPokemon
+        case successEntry
     }
     
     enum Persistence: String {

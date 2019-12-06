@@ -63,5 +63,11 @@ class PokemonListScreenFeatureTest: XCTestCase {
         stepUserIsOnThePokemonListScreen()
         stepUserScrollToTheEndOfThePage()
         stepUserCanSeeTheNextPage()
+    }  
+    func testScenario_UserCanSeeAPokemonDetail() {
+        launchScenarioUserCanSeeAPokemonDetail()
+        stepUserIsOnThePokemonListScreen()
+        stepUserClicksOnAPokemonOnTheList()
+        stepUserIsOnThePokemonDetailScreen()
     } 
 }

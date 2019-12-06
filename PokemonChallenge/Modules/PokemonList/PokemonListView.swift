@@ -120,7 +120,8 @@ class PokemonListView: UIViewController, PokemonListViewInput {
 
 extension PokemonListView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presenter.didSelected(row: indexPath.row)
+        let card = collectionView.cellForItem(at: indexPath) as? PokemonCard
+        presenter.didSelected(row: indexPath.row, switchSelected: card?.shinySwitch.isOn ?? false)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -142,14 +143,14 @@ extension PokemonListView: UICollectionViewDataSource {
         
         let information = presenter.cardInformation(for: indexPath.row)
         
-        var image: UIImage? = #imageLiteral(resourceName: "pokemon_placeholder")
-        if let imageData = information.image {
-            image = UIImage(data: imageData)
-        }
-        
+        var image: UIImage?
         var shiny: UIImage?
-        if let shinyData = information.shiny {
+        
+        if let imageData = information.image, let shinyData = information.shiny {
+            image = UIImage(data: imageData)
             shiny = UIImage(data: shinyData)
+        } else {
+            presenter.updateImages(for: information.identifier)
         }
         
         cell.identifier = "\(information.identifier)"

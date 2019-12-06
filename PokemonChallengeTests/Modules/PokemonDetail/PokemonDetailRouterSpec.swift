@@ -1,8 +1,8 @@
-//
-//  PokemonListRouterSpec.swift
+// 
+//  PokemonDetailRouterSpec.swift
 //  PokemonChallengeTests
 //
-//  Created by Felipe Docil on 24/11/2019.
+//  Created by Felipe Docil on 04/12/2019.
 //  Copyright © 2019 Felipe Docil. All rights reserved.
 //
 
@@ -10,22 +10,22 @@
 import Nimble
 import Quick
 
-class PokemonListRouterSpec: QuickSpec {
+class PokemonDetailRouterSpec: QuickSpec {
     override func spec() {
-        describe("PokemonListRouterSpec") {
+        describe("PokemonDetailRouterSpec") {
             it("configures the module") {
-                let coordinator = MockPokemonListCoordinator()
+                let coordinator = MockPokemonDetailCoordinator()
+                let mockNetworking = MockPokemonDetailNetworking()
+                let mockDatabase = MockPokemonDetailDatabase()
 
-                let mockNetworking = MockPokemonListNetworking()
-                let mockDatabase = MockPokemonListDatabase()
-                let mockServices = PokemonListServices(networking: mockNetworking, database: mockDatabase)
+                let mockServices = PokemonDetailServices(networking: mockNetworking, database: mockDatabase)
 
-                let module = PokemonListRouter.build(from: coordinator, services: mockServices)
-
-                let view = module as? PokemonListView
-                let presenter = view?.presenter as? PokemonListPresenter
-                let router = presenter?.router as? PokemonListRouter
-                let interactor = presenter?.interactor as? PokemonListInteractor
+                let module = PokemonDetailRouter.build(from: coordinator, services: mockServices, identifier: 1, isShiny: false)
+                
+                let view = module as? PokemonDetailView
+                let presenter = view?.presenter as? PokemonDetailPresenter
+                let router = presenter?.router as? PokemonDetailRouter
+                let interactor = presenter?.interactor as? PokemonDetailInteractor
 
                 expect(view).notTo(beNil())
                 expect(presenter).notTo(beNil())
@@ -37,29 +37,11 @@ class PokemonListRouterSpec: QuickSpec {
                 expect(interactor?.output).notTo(beNil())
                 expect(interactor?.services).notTo(beNil())
             }
-
-            it("presents the detail") {
-                let coordinator = MockPokemonListCoordinator()
-
-                let mockNetworking = MockPokemonListNetworking()
-                let mockDatabase = MockPokemonListDatabase()
-                let mockServices = PokemonListServices(networking: mockNetworking, database: mockDatabase)
-
-                let module = PokemonListRouter.build(from: coordinator, services: mockServices)
-                let view = module as? PokemonListView
-                let presenter = view?.presenter as? PokemonListPresenter
-                let router = presenter?.router as? PokemonListRouter
-
-                router?.presentDetail(for: 1, isShiny: false)
-
-                expect(coordinator.invokedPresentDetail) == true
-                expect(coordinator.invokedPresentDetailParameters?.identifier) == 1
-            }
         }
     }
 }
 
-class MockPokemonListCoordinator: CoordinatorInput {
+class MockPokemonDetailCoordinator: CoordinatorInput {
     var stubbedNavigationController: UINavigationController = UINavigationController()
     var navigationController: UINavigationController
 
@@ -84,7 +66,7 @@ class MockPokemonListCoordinator: CoordinatorInput {
     }
 }
 
-class MockPokemonListNetworking: NetworkingServiceInput {
+class MockPokemonDetailNetworking: NetworkingServiceInput {
     var invokedPokemonURLs = false
     var invokedPokemonURLsCount = 0
     var invokedPokemonURLsParameters: (offset: Int, Void)?
@@ -172,7 +154,7 @@ class MockPokemonListNetworking: NetworkingServiceInput {
     }
 }
 
-class MockPokemonListDatabase: DatabaseServiceInput {
+class MockPokemonDetailDatabase: DatabaseServiceInput {
     var invokedInsertPokemon = false
     var invokedInsertPokemonCount = 0
     var invokedInsertPokemonParameters: (pokemon: Pokemon, Void)?

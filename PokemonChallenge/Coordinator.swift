@@ -11,7 +11,7 @@ import CoreData
 
 protocol CoordinatorInput: AnyObject {
     func buildRoot() -> UIViewController
-    func presentDetail(in navigationController: UINavigationController?, with identifier: String)
+    func presentDetail(in navigationController: UINavigationController?, with identifier: Int, isShiny: Bool)
 }
 
 protocol CoordinatorBuilder {
@@ -33,8 +33,8 @@ class Coordinator: CoordinatorInput, CoordinatorBuilder {
         return buildPokemonList()
     }
     
-    func presentDetail(in navigationController: UINavigationController?, with identifier: String) {
-        let detail = buildPokemonDetail(for: identifier)
+    func presentDetail(in navigationController: UINavigationController?, with identifier: Int, isShiny: Bool) {
+        let detail = buildPokemonDetail(for: identifier, isShiny: isShiny)
         
         DispatchQueue.main.async {
             navigationController?.pushViewController(detail, animated: true)
@@ -52,10 +52,10 @@ extension CoordinatorBuilder where Self: CoordinatorInput {
         return list
     }
     
-    func buildPokemonDetail(for identifier: String) -> UIViewController {
-//        let services = PokemonDetailServices(database: databaseService)
-//        let detail = PokemonDetailRouter.build(from: self, services: services, identifier: identifier)
+    func buildPokemonDetail(for identifier: Int, isShiny: Bool) -> UIViewController {
+        let services = PokemonDetailServices(networking: networkingService, database: databaseService)
+        let detail = PokemonDetailRouter.build(from: self, services: services, identifier: identifier, isShiny: isShiny)
         
-        return UIViewController() // return detail
+        return detail
     }
 }

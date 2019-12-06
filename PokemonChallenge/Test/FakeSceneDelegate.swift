@@ -63,6 +63,20 @@ extension Pokemon {
     }
 }
 
+extension Entry {
+    static var fakeEntries: [Entry] {
+        guard let path = Bundle.main.path(forResource: "fake_entries", ofType: "json") else { return [] }
+        let url = URL(fileURLWithPath: path)
+                      
+        guard let data = try? Data(contentsOf: url, options: .mappedIfSafe) else { return [] }
+               
+        let decoder = JSONDecoder()
+        let entries = try? decoder.decode([Entry].self, from: data)
+               
+        return entries ?? []
+    }
+}
+
 // Services
 
 class MockNetworking: NetworkingServiceInput {
@@ -90,9 +104,9 @@ class MockNetworking: NetworkingServiceInput {
         completionHandler(.success([])); return }
         
         // Mulitpe Page
-        if arguments.contains(Arguments.Networking.multiplePages.rawValue) && offset <= 5 {
+        if arguments.contains(Arguments.Networking.multiplePages.rawValue) && offset == 0 {
         completionHandler(.success(PokemonURL.fakeURLs.compactMap { $0.url } )); return }
-        else if arguments.contains(Arguments.Networking.multiplePages.rawValue) && offset == 10 {
+        else if arguments.contains(Arguments.Networking.multiplePages.rawValue) && offset == 1 {
             completionHandler(.success(PokemonURL.fakeURLs_secondPage.compactMap { $0.url } )); return }
         else if arguments.contains(Arguments.Networking.multiplePages.rawValue) {
             completionHandler(.success([])); return }
@@ -117,6 +131,18 @@ class MockNetworking: NetworkingServiceInput {
         
         completionHandler(.failure(.noNetwork))
     }
+    
+    func entries(for urlPath: String, completionHandler: @escaping (Result<[Entry], NetworkingServiceError>) -> Void) {
+        let arguments = ProcessInfo.processInfo.arguments
+        
+        if arguments.contains(Arguments.Networking.noNetwork.rawValue) { completionHandler(.failure(.noNetwork)); return }
+        
+        if arguments.contains(Arguments.Networking.successEntry.rawValue) {
+            completionHandler(.success(Entry.fakeEntries))
+        }
+        
+         completionHandler(.failure(.noNetwork))
+    }
 }
 
 class MockDatabase: DatabaseServiceInput {
@@ -140,13 +166,22 @@ class MockDatabase: DatabaseServiceInput {
         
         return []
     }
+    
+    func pokemon(identifier: Int) -> Pokemon? {
+        let pokemon = cache.first(where: { $0.identifier == identifier } )
+        return pokemon
+    }
 }
 
 // Coordinator
 
 class MockCoordinator: CoordinatorInput, CoordinatorBuilder {
-    func presentDetail(in navigationController: UINavigationController?, with identifier: String) {
-        fatalError()
+    func presentDetail(in navigationController: UINavigationController?, with identifier: Int, isShiny: Bool) {
+        let detail = buildPokemonDetail(for: identifier, isShiny: isShiny)
+        
+        DispatchQueue.main.async {
+            navigationController?.pushViewController(detail, animated: true)
+        }
     }
     
     lazy var networkingService: NetworkingServiceInput = MockNetworking()

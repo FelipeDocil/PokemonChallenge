@@ -21,6 +21,7 @@ protocol PokemonListRouterOutput: AnyObject {}
 
 protocol PokemonListRouterInput: AnyObject {
     static func build(from coordinator: CoordinatorInput, services: PokemonListServices) -> UIViewController
+    func presentDetail(for identifier: Int, isShiny: Bool)
 }
 
 class PokemonListRouter: PokemonListRouterInput {
@@ -57,5 +58,9 @@ class PokemonListRouter: PokemonListRouterInput {
         presenter.view = view
 
         return view
+    }
+    
+    func presentDetail(for identifier: Int, isShiny: Bool) {
+        dependencies.coordinator?.presentDetail(in: viewController?.navigationController, with: identifier, isShiny: isShiny)
     }
 }

@@ -16,6 +16,7 @@ private enum Request {
     case pokemonURLs(offset: Int)
     case pokemon(path: String)
     case image(path: String)
+    case entry(path: String)
     
     func request(with method: String, endpoint: String, parameters: [String: String], againstBaseURL: Bool) -> URLRequest {
         let urlString = againstBaseURL ? baseURL + endpoint : endpoint
@@ -67,6 +68,14 @@ private enum Request {
             let urlRequest = request(with: "GET", endpoint: endpoint, parameters: parameters, againstBaseURL: false)
             
             return urlRequest
+            
+        case let .entry(path: path):
+            let endpoint = path
+            let parameters: [String: String] = [:]
+            
+            let urlRequest = request(with: "GET", endpoint: endpoint, parameters: parameters, againstBaseURL: false)
+            
+            return urlRequest
         }
     }
 }
@@ -80,6 +89,7 @@ protocol NetworkingServiceInput {
     func pokemonURLs(offset: Int, completionHandler: @escaping (Result<[URL], NetworkingServiceError>) -> Void)
     func pokemon(for urlPath: String, completionHandler: @escaping (Result<Pokemon, NetworkingServiceError>) -> Void)
     func image(for urlPath: String, completionHandler: @escaping (Result<Data, NetworkingServiceError>) -> Void)
+    func entries(for urlPath: String, completionHandler: @escaping (Result<[Entry], NetworkingServiceError>) -> Void)
 }
 
 class NetworkingService: NetworkingServiceInput {
@@ -97,7 +107,7 @@ class NetworkingService: NetworkingServiceInput {
                 }
                 
                 let decoder = JSONDecoder()
-                let metadata = try! decoder.decode(Metadata.self, from: data)
+                let metadata = try! decoder.decode(MetadataURL.self, from: data)
                 let pokemonURLs = metadata.results.compactMap { $0.url }
                 completionHandler(.success(pokemonURLs))
                 
@@ -150,14 +160,44 @@ class NetworkingService: NetworkingServiceInput {
         
         task.resume()
     }
+    
+    func entries(for urlPath: String, completionHandler: @escaping (Result<[Entry], NetworkingServiceError>) -> Void) {
+        let request = Request.entry(path: urlPath).request
+        
+        let task = session.dataTask(with: request) { result in
+            switch result {
+            case let .success(response, data):
+                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+                    completionHandler(.failure(.invalidRequest))
+                    return
+                }
+                
+                let decoder = JSONDecoder()
+                let entries = try! decoder.decode(MetadataEntry.self, from: data)
+                completionHandler(.success(entries.flavorTextEntries))
+            case .failure:
+                completionHandler(.failure(.noNetwork))
+            }
+        }
+        
+        task.resume()
+    }
 }
 
-internal struct Metadata: Codable {
+internal struct MetadataURL: Codable {
     var results: [PokemonURL]
 }
 
 internal struct PokemonURL: Codable {
     var url: URL
+}
+
+internal struct MetadataEntry: Codable {
+    var flavorTextEntries: [Entry]
+    
+    enum CodingKeys: String, CodingKey {
+        case flavorTextEntries = "flavor_text_entries"
+    }
 }
 
 protocol URLSessionDataTaskProtocol { func resume() }
@@ -182,15 +222,5 @@ extension URLSession: URLSessionProtocol {
                 }
                 result(.success((response, data)))
                 } as URLSessionDataTaskProtocol
-    }
-}
-
-extension Data {
-    var prettyPrintedJSONString: NSString? { /// NSString gives us a nice sanitized debugDescription
-        guard let object = try? JSONSerialization.jsonObject(with: self, options: []),
-              let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted]),
-              let prettyPrintedString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else { return nil }
-
-        return prettyPrintedString
     }
 }

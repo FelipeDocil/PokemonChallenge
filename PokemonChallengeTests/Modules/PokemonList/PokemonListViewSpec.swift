@@ -44,7 +44,6 @@ class PokemonListViewSpec: QuickSpec {
                 
                 let navigationController = UINavigationController(rootViewController: view)
 
-                // TODO: Change the record to true
                 record = false
                 expect(navigationController).to(haveValidSnapshot(as: .image(on: .iPhoneSe), named: "iPhoneSE"))
                 expect(navigationController).to(haveValidSnapshot(as: .image(on: .iPhone8), named: "iPhone8"))
@@ -107,14 +106,14 @@ class MockPokemonListPresenter: PokemonListPresenterInput {
     
     var invokedDidSelected = false
     var invokedDidSelectedCount = 0
-    var invokedDidSelectedParameters: (row: Int, Void)?
-    var invokedDidSelectedParametersList = [(row: Int, Void)]()
+    var invokedDidSelectedParameters: (row: Int, switchSelected: Bool, Void)?
+    var invokedDidSelectedParametersList = [(row: Int, switchSelected: Bool, Void)]()
     
-    func didSelected(row: Int) {
+    func didSelected(row: Int, switchSelected: Bool) {
         invokedDidSelected = true
         invokedDidSelectedCount += 1
-        invokedDidSelectedParameters = (row, ())
-        invokedDidSelectedParametersList.append((row, ()))
+        invokedDidSelectedParameters = (row, switchSelected, ())
+        invokedDidSelectedParametersList.append((row, switchSelected, ()))
     }
     
     var invokedSearch = false
@@ -127,5 +126,9 @@ class MockPokemonListPresenter: PokemonListPresenterInput {
         invokedSearchCount += 1
         invokedSearchParameters = (term, ())
         invokedSearchParametersList.append((term, ()))
+    }
+    
+    func updateImages(for identifier: Int) {
+        fatalError("Dummy implementation")
     }
 }

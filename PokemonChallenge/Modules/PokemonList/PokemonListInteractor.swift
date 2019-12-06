@@ -27,6 +27,7 @@ protocol PokemonListInteractorInput: AnyObject {
     func pokemon(completionHandler: @escaping (Result<Set<Pokemon>, PokemonListInteractorErrors>) -> Void)
     func images(for pokemon: Pokemon, completionHandler: @escaping (Result<Pokemon, PokemonListInteractorErrors>) -> Void)
     func save(pokemon: [Pokemon], completionHandler: @escaping () -> ())
+    func localPokemon() -> [Pokemon]
 }
 
 protocol PokemonListInteractorOutput: AnyObject {}
@@ -55,7 +56,7 @@ class PokemonListInteractor: PokemonListInteractorInput {
                 let downloadGroup = DispatchGroup()
                 let _ = DispatchQueue.global(qos: .userInitiated)
                 
-                // Send n threads to fetch images
+                // Send n threads to fetch pokemon
                 let queue = DispatchQueue(label: "Update localPokemon", attributes: .concurrent)
                 DispatchQueue.concurrentPerform(iterations: pokemonURLs.count) { index in
                     let url = pokemonURLs[index]
@@ -113,6 +114,10 @@ class PokemonListInteractor: PokemonListInteractorInput {
         downloadGroup.notify(queue: DispatchQueue.main) {
             completionHandler()
         }
+    }
+    
+    func localPokemon() -> [Pokemon] {
+        return services?.database.fetchAllPokemon() ?? []
     }
     
     // MARK: Private methods

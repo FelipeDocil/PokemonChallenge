@@ -75,6 +75,39 @@ class DatabaseServiceSpec: QuickSpec {
                     
                     expect(pokemon.count) == 0
                 }
+                
+                it("update image from existing pokemon") {
+                    self.initDatabase()
+                    let service = DatabaseService(container: self.mockPersistentContainer)
+                    
+                    let image = UIImage(named: "bulbasaur_default", in: Bundle(for: PokemonCardSpec.self), compatibleWith: nil)!.pngData()
+                    let shiny = UIImage(named: "bulbasaur_shiny", in: Bundle(for: PokemonCardSpec.self), compatibleWith: nil)!.pngData()
+                    var pokemon = Pokemon.fakePokemon.first!
+                    pokemon.image = image
+                    
+                    let cached = service.insertPokemon(pokemon: pokemon)
+                    
+                    expect(cached).toNot(beNil())
+                    expect(cached?.image).toNot(beNil())
+                    
+                    var newPokemon = cached!.toPokemon()!
+                    newPokemon.shiny = shiny
+                    
+                    let newCached = service.insertPokemon(pokemon: newPokemon)
+                    expect(newCached).toNot(beNil())
+                    expect(newCached?.image).toNot(beNil())
+                    expect(newCached?.shiny).toNot(beNil())
+                }
+                
+                it("fetches a single pokemon") {
+                    self.initDatabase()
+                    let service = DatabaseService(container: self.mockPersistentContainer)
+                    
+                    let pokemon = service.pokemon(identifier: 4)
+                    
+                    expect(pokemon).toNot(beNil())
+                    expect(pokemon?.name) == "charmander"
+                }
             }
         }
     }

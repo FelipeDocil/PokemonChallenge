@@ -48,6 +48,16 @@ class CoordinatorSpec: QuickSpec {
                 expect(navigationController.topViewController).to(beAKindOf(PokemonListView.self))
                 expect(navigationController.viewControllers.count) == 1
             }
+            
+            it("present detail view") {
+                let coordinator = Coordinator(container: self.mockPersistantContainer)
+                
+                let navigationController = UINavigationController()
+                
+                coordinator.presentDetail(in: navigationController, with: 1, isShiny: false)
+                
+                expect(navigationController.topViewController).toEventually(beAKindOf(PokemonDetailView.self))
+            }
         }
     }
 }

@@ -187,6 +187,15 @@ class PokemonListInteractorSpec: QuickSpec {
                 expect(self.mockDatabase.invokedInsertPokemon).toEventually(beTrue())
                 expect(self.mockDatabase.invokedInsertPokemonCount).toEventually(equal(pokemon.count))
             }
+            
+            it("fetches local pokemon") {
+                let expectedPokemon = Pokemon.fakePokemon
+                self.mockDatabase.stubbedFetchAllPokemonResult = expectedPokemon
+                
+                let pokemon = self.interactor.localPokemon()
+                
+                expect(pokemon) == expectedPokemon
+            }
         }
     }
 }

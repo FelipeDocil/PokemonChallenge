@@ -13,6 +13,7 @@ protocol DatabaseServiceInput {
     @discardableResult
     func insertPokemon(pokemon: Pokemon) -> PokemonManaged?
     func fetchAllPokemon() -> [Pokemon]
+    func pokemon(identifier: Int) -> Pokemon?
 }
 
 class DatabaseService: DatabaseServiceInput {
@@ -26,8 +27,9 @@ class DatabaseService: DatabaseServiceInput {
     @discardableResult
     func insertPokemon(pokemon: Pokemon) -> PokemonManaged? {
         let context = persistentContainer.newBackgroundContext()
-        if let cachedPokemon = fetch(pokemon: pokemon) {
-            return cachedPokemon
+        
+        if let cachedPokemon = fetch(identifier: pokemon.identifier) {
+            return update(managedObject: cachedPokemon, with: pokemon)
         }
         
         guard
@@ -46,7 +48,7 @@ class DatabaseService: DatabaseServiceInput {
         do {
             try context.save()
         } catch {
-            print("💥 Save error \(error)")
+            print("💥 Save \(pokemon.name) error \(error)")
         }
         
         return pokemonManaged
@@ -59,11 +61,35 @@ class DatabaseService: DatabaseServiceInput {
         return results?.compactMap{ $0.toPokemon() } ?? []
     }
     
-    private func fetch(pokemon: Pokemon) -> PokemonManaged? {
+    func pokemon(identifier: Int) -> Pokemon? {
+        let cached = fetch(identifier: identifier)
+        
+        return cached?.toPokemon()
+    }
+    
+    private func fetch(identifier: Int) -> PokemonManaged? {
         let request = NSFetchRequest<PokemonManaged>(entityName: "Pokemon")
-        request.predicate = NSPredicate(format: "identifier = %i", pokemon.identifier)
+        request.predicate = NSPredicate(format: "identifier = %i", identifier)
         let results = try? persistentContainer.viewContext.fetch(request)
         
         return results?.count ?? 0 > 0 ? results?.first : nil
+    }
+    
+    private func update(managedObject: PokemonManaged, with pokemon: Pokemon) -> PokemonManaged {
+        if let image = pokemon.image {
+            managedObject.image = image
+        }
+        
+        if let shiny = pokemon.shiny {
+            managedObject.shiny = shiny
+        }
+        
+        do {
+            try persistentContainer.viewContext.save()
+        } catch {
+            print("💥 Update \(pokemon.name) error \(error)")
+        }
+        
+        return managedObject
     }
 }

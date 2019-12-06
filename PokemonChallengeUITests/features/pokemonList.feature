@@ -25,7 +25,7 @@ Feature: Pokemon list screen
     When User scroll to the end of the page
     Then User can see the next page
 
-  @android
+  @ios @android
   Scenario: User can see a pokemon detail
     Given User is on the Pokemon List screen
     When User clicks on a pokemon on the list

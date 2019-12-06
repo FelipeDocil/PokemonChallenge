@@ -12,9 +12,10 @@ protocol PokemonListPresenterInput: AnyObject {
     func viewIsReady()
     func numberOfItems() -> Int
     func cardInformation(for index: Int) -> PokemonListViewData
-    func didSelected(row: Int)
+    func didSelected(row: Int, switchSelected: Bool)
     func search(for term: String)
     func reachEndOfPage()
+    func updateImages(for identifier: Int)
 }
 
 class PokemonListPresenter: PokemonListPresenterInput, PokemonListInteractorOutput, PokemonListRouterOutput {
@@ -24,7 +25,7 @@ class PokemonListPresenter: PokemonListPresenterInput, PokemonListInteractorOutp
     var interactor: PokemonListInteractorInput
     var router: PokemonListRouterInput
     
-    private var isLoading = false
+    private var ignoreFetch = false
 
     init(interactor: PokemonListInteractorInput, router: PokemonListRouterInput) {
         self.interactor = interactor
@@ -57,69 +58,62 @@ class PokemonListPresenter: PokemonListPresenterInput, PokemonListInteractorOutp
         nextPokemon()
     }
     
-    func didSelected(row: Int) {
+    func didSelected(row: Int, switchSelected: Bool) {
         let pokemon = dataSource[row]
-//        router.presentDetail(for: pokemon.identifier)
+        router.presentDetail(for: pokemon.identifier, isShiny: switchSelected)
     }
     
     func search(for term: String) {
-       /** if term.isEmpty == true {
-            dataSource = interactor.localPokemon
+        let localDatasource = interactor.localPokemon()
+        
+        if term.isEmpty == true {
+            ignoreFetch = false
+            dataSource = order(Set(localDatasource))
             view?.reloadList()
             return
         }
         
-        let filtered = dataSource.filter { pokemon -> Bool in
+        let filtered = localDatasource.filter { pokemon -> Bool in
             return pokemon.name.lowercased().contains(term.lowercased())
         }
         
-        dataSource = filtered
-        view?.reloadList()*/
+        ignoreFetch = true
+        dataSource = order(Set(filtered))
+        view?.reloadList()
+    }
+    
+    func updateImages(for identifier: Int) {
+        guard let pokemon = dataSource.first(where: { $0.identifier == identifier }) else { return }
+        
+        let queue = DispatchQueue(label: "Update dataSource", attributes: .concurrent)
+        interactor.images(for: pokemon) { result in
+            if case let .success(pokemonWithImage) = result {
+                queue.async(flags: .barrier) {
+                    self.updateDatasource(with: pokemonWithImage)
+                    self.view?.reloadList()
+                    self.interactor.save(pokemon: [pokemonWithImage]) {}
+                }
+            }
+        }
     }
     
     // MARK: Private methods
     
     private func nextPokemon() {
-        if isLoading { return }
+        if ignoreFetch { return }
         
-        isLoading = true
+        ignoreFetch = true
         interactor.pokemon { result in
             if case let .success(pokemon) = result {
                 let newDatasource = pokemon.union(Set(self.dataSource))
+                let isBigger = newDatasource.count > self.dataSource.count
+                
                 self.dataSource = self.order(newDatasource)
                 
-                // Update View
-                self.view?.reloadList()
-            }
-            
-            // Start to fetch missing images
-            let downloadGroup = DispatchGroup()
-            let _ = DispatchQueue.global(qos: .userInitiated)
-            let missingImageList = self.dataSource.filter { return $0.image == nil || $0.shiny == nil }
-            
-            // Send n threads to fetch images
-            let queue = DispatchQueue(label: "Update dataSource", attributes: .concurrent)
-            DispatchQueue.concurrentPerform(iterations: missingImageList.count) { index in
-                let pokemon = missingImageList[index]
-                
-                downloadGroup.enter()
-                self.interactor.images(for: pokemon) { result in
-                    if case let .success(pokemonWithImage) = result {
-                        queue.async(flags: .barrier) {
-                            self.updateDatasource(with: pokemonWithImage)
-                            self.view?.reloadList()
-                        }
-                    }
-                    
-                    downloadGroup.leave()
-                }
-            }
-            
-            downloadGroup.notify(queue: DispatchQueue.main) {
-                // Save to database once all images are downloaded
-                self.interactor.save(pokemon: self.dataSource) {
-                    // Enable for more downloads
-                    self.isLoading = false
+                // Update View if it changed
+                if isBigger == true {
+                    self.view?.reloadList()
+                    self.ignoreFetch = false
                 }
             }
         }

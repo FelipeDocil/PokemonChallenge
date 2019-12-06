@@ -25,7 +25,7 @@ class NetworkingServiceSpec: QuickSpec {
                                                              statusCode: 200,
                                                              httpVersion: nil,
                                                              headerFields: nil)
-                    let stubbedData = Metadata(results: PokemonURL.fakeURLs)
+                    let stubbedData = MetadataURL(results: PokemonURL.fakeURLs)
                     let urlSession = MockURLSession()
                     urlSession.stubbedURLResponse = stubbedURLResponse
                     urlSession.stubbedData = try? jsonEncoder.encode(stubbedData)
@@ -99,6 +99,34 @@ class NetworkingServiceSpec: QuickSpec {
                     
                     expect(actualResult).toEventually(equal(expectResult))
                 }
+                
+                it("successfuly fetch entries") {
+                    let urlPath = URL(string: "https://fake.pokeapi.co.uk")!
+                    let jsonEncoder = JSONEncoder()
+                    let expectResult: [Entry] = Entry.fakeEntries
+                    
+                    let stubbedURLResponse = HTTPURLResponse(url: urlPath,
+                                                             statusCode: 200,
+                                                             httpVersion: nil,
+                                                             headerFields: nil)
+                    let stubbedData = MetadataEntry(flavorTextEntries: expectResult)
+                    let urlSession = MockURLSession()
+                    urlSession.stubbedURLResponse = stubbedURLResponse
+                    urlSession.stubbedData = try? jsonEncoder.encode(stubbedData)
+                    
+                    let service = NetworkingService()
+                    service.session = urlSession
+                    
+                    var actualResult: [Entry] = []
+                    service.entries(for: urlPath.absoluteString) { result in
+                                    switch result {
+                                    case let .success(entries): actualResult = entries
+                                    case .failure: XCTFail("Entries request shouldn't fail")
+                                    }
+                    }
+                    
+                    expect(actualResult).toEventually(equal(expectResult))
+                }
             }
             
             context("Fail path") {
@@ -111,7 +139,7 @@ class NetworkingServiceSpec: QuickSpec {
                                                              statusCode: 404,
                                                              httpVersion: nil,
                                                              headerFields: nil)
-                    let stubbedData = Metadata(results: PokemonURL.fakeURLs)
+                    let stubbedData = MetadataURL(results: PokemonURL.fakeURLs)
                     let urlSession = MockURLSession()
                     urlSession.stubbedURLResponse = stubbedURLResponse
                     urlSession.stubbedData = try? jsonEncoder.encode(stubbedData)
@@ -148,6 +176,16 @@ class NetworkingServiceSpec: QuickSpec {
                     }
                     
                     expect(imageActualResult).toEventually(equal(expectResult))
+                    
+                    var entriesActualResult: NetworkingServiceError?
+                    service.entries(for: urlPath.absoluteString) { result in
+                        switch result {
+                        case .success: XCTFail("Entries request should fail")
+                        case let .failure(error): entriesActualResult = error
+                        }
+                    }
+                    
+                    expect(entriesActualResult).toEventually(equal(expectResult))
                 }
                 
                 it("receives no network error") {
@@ -189,6 +227,16 @@ class NetworkingServiceSpec: QuickSpec {
                     }
                     
                     expect(imageActualResult).toEventually(equal(expectResult))
+                    
+                    var entriesActualResult: NetworkingServiceError?
+                    service.entries(for: "https://fake.pokeapi.co.uk") { result in
+                        switch result {
+                        case .success: XCTFail("Image request should fail")
+                        case let .failure(error): entriesActualResult = error
+                        }
+                    }
+                    
+                    expect(entriesActualResult).toEventually(equal(expectResult))
                 }
             }
         }

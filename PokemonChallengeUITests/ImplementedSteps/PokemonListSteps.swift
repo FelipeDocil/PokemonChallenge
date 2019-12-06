@@ -74,6 +74,16 @@ extension PokemonListScreenFeatureTest {
             Arguments.Networking.multiplePages.rawValue
         ])
     }
+    
+    func launchScenarioUserCanSeeAPokemonDetail(file _: StaticString = #file, line _: UInt = #line) {
+        launchApp(arguments: [
+            Arguments.Initial.list.rawValue,
+            Arguments.Persistence.cached.rawValue,
+            Arguments.Networking.successPokemon.rawValue,
+            Arguments.Networking.singlePage.rawValue,
+            Arguments.Networking.successEntry.rawValue
+        ])
+    }
 }
 
 // MARK: - Steps
@@ -151,5 +161,18 @@ extension PokemonListScreenFeatureTest {
         imageView = lastCellSecondPage.images["pokemon_card_15_image_shiny"]
         
         XCTAssert(imageView.exists, "User cannot see the shiny image", file: file, line: line)
+    }
+    
+    func stepUserClicksOnAPokemonOnTheList(file: StaticString = #file, line: UInt = #line) {
+        let collectionView = app.collectionViews["pokemon_list_view_collection_view"]
+        let cell = collectionView.cells["pokemon_card_1"]
+                
+        XCTAssert(cell.exists, "User cannot see the last cell", file: file, line: line)
+        
+        cell.tap()
+    }
+    
+    func stepUserIsOnThePokemonDetailScreen(file: StaticString = #file, line: UInt = #line) {
+        XCTAssert(app.otherElements["pokemon_detail_view"].exists, "User is not on pokemon detail screen", file: file, line: line)
     }
 }
