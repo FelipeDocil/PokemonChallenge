@@ -161,15 +161,34 @@ class MockDatabase: DatabaseServiceInput {
         let arguments = ProcessInfo.processInfo.arguments
         
         if arguments.contains(Arguments.Persistence.caches.rawValue) { return cache }
-        if arguments.contains(Arguments.Persistence.cached.rawValue) { return Array(Pokemon.fakePokemon[0..<5]) }
+        if arguments.contains(Arguments.Persistence.cachedPokemon.rawValue) { return Array(Pokemon.fakePokemon[0..<5]) }
         if arguments.contains(Arguments.Persistence.empty.rawValue) { return [] }
         
         return []
     }
     
     func pokemon(identifier: Int) -> Pokemon? {
-        let pokemon = cache.first(where: { $0.identifier == identifier } )
-        return pokemon
+        let arguments = ProcessInfo.processInfo.arguments
+        
+        if let pokemon = cache.first(where: { $0.identifier == identifier } ) {
+            return pokemon
+        }
+        
+        let image = UIImage(named: "1_default", in: Bundle(for: MockNetworking.self), compatibleWith: nil)
+        let shiny = UIImage(named: "1_shiny", in: Bundle(for: MockNetworking.self), compatibleWith: nil)
+        
+        var fakePokemon = Pokemon.fakePokemon.first
+        fakePokemon?.image = image?.pngData()
+        fakePokemon?.shiny = shiny?.pngData()
+        
+        if arguments.contains(Arguments.Persistence.cachedEntry.rawValue) {
+            let entry = Entry.fakeEntries.filter { entry -> Bool in
+                return entry.language.lowercased() == "en"
+            }
+            fakePokemon?.entry = entry
+        }
+        
+        return fakePokemon
     }
 }
 
@@ -192,6 +211,8 @@ class MockCoordinator: CoordinatorInput, CoordinatorBuilder {
         var controller: UIViewController = UIViewController()
         
         if arguments.contains(Arguments.Initial.list.rawValue) { controller = buildPokemonList() }
+        if arguments.contains(Arguments.Initial.detail.rawValue) { controller = buildPokemonDetail(for: 1, isShiny: false) }
+        if arguments.contains(Arguments.Initial.detailShiny.rawValue) { controller = buildPokemonDetail(for: 1, isShiny: true) }
         
         let navigationController = UINavigationController(rootViewController: controller)
         return navigationController

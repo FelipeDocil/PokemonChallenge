@@ -73,6 +73,8 @@ class PokemonDetailPresenter: PokemonDetailPresenterInput, PokemonDetailInteract
                 DispatchQueue.main.async {
                     self.view?.updateEntries(texts: entryViewData)
                 }
+                
+                self.interactor.save(entries: englishLanguageEntries, into: self.identifier)
             }
         }
     }

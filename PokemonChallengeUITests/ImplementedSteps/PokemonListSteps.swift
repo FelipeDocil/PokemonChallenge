@@ -33,7 +33,7 @@ enum PokemonListPersistenceArguments: String {
     
     var arguments: [String] {
         switch self {
-        case .available: return [Arguments.Persistence.cached.rawValue]
+        case .available: return [Arguments.Persistence.cachedPokemon.rawValue]
         case .notAvailable: return [Arguments.Persistence.empty.rawValue]
         }
     }
@@ -78,7 +78,7 @@ extension PokemonListScreenFeatureTest {
     func launchScenarioUserCanSeeAPokemonDetail(file _: StaticString = #file, line _: UInt = #line) {
         launchApp(arguments: [
             Arguments.Initial.list.rawValue,
-            Arguments.Persistence.cached.rawValue,
+            Arguments.Persistence.cachedPokemon.rawValue,
             Arguments.Networking.successPokemon.rawValue,
             Arguments.Networking.singlePage.rawValue,
             Arguments.Networking.successEntry.rawValue

@@ -44,6 +44,7 @@ class DatabaseService: DatabaseServiceInput {
         pokemonManaged.shinyPath = pokemon.shinyPath
         pokemonManaged.shiny = pokemon.shiny
         pokemonManaged.pokedexPath = pokemon.pokedexPath
+        pokemonManaged.entry = Set(pokemon.entry.compactMap( { $0.toManaged(in: context) }))
         
         do {
             try context.save()
@@ -76,6 +77,8 @@ class DatabaseService: DatabaseServiceInput {
     }
     
     private func update(managedObject: PokemonManaged, with pokemon: Pokemon) -> PokemonManaged {
+        let context = persistentContainer.viewContext
+        
         if let image = pokemon.image {
             managedObject.image = image
         }
@@ -84,8 +87,12 @@ class DatabaseService: DatabaseServiceInput {
             managedObject.shiny = shiny
         }
         
+        if pokemon.entry.isEmpty == false {
+            managedObject.entry = Set(pokemon.entry.compactMap( { $0.toManaged(in: context) }))
+        }
+        
         do {
-            try persistentContainer.viewContext.save()
+            try context.save()
         } catch {
             print("💥 Update \(pokemon.name) error \(error)")
         }

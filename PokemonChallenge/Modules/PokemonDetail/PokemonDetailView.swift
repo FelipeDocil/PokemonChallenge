@@ -11,6 +11,9 @@ import UIKit
 private struct Constant {
     struct AccessibilityIdentifier {
         static let pokemonDetailView = "pokemon_detail_view"
+        static let image = pokemonDetailView + "_image_view_%@"
+        static let name = pokemonDetailView + "_name_label"
+        static let entries = pokemonDetailView + "_entry_label"
     }
     
     struct Text {
@@ -52,6 +55,7 @@ class PokemonDetailView: UIViewController, PokemonDetailViewInput {
     lazy var nameLabel: UILabel = {
         let tmpLabel = UILabel()
         tmpLabel.translatesAutoresizingMaskIntoConstraints = false
+        tmpLabel.accessibilityIdentifier = Constant.AccessibilityIdentifier.name
         tmpLabel.numberOfLines = 0
         tmpLabel.textColor = .black
         tmpLabel.textAlignment = .left
@@ -63,6 +67,7 @@ class PokemonDetailView: UIViewController, PokemonDetailViewInput {
     lazy var entriesLabel: UILabel = {
         let tmpLabel = UILabel()
         tmpLabel.translatesAutoresizingMaskIntoConstraints = false
+        tmpLabel.accessibilityIdentifier = Constant.AccessibilityIdentifier.entries
         tmpLabel.numberOfLines = 0
         tmpLabel.textColor = .black
         tmpLabel.textAlignment = .left
@@ -100,6 +105,7 @@ class PokemonDetailView: UIViewController, PokemonDetailViewInput {
         let name = viewData.name.capitalized
         
         imageView.image = image
+        imageView.accessibilityIdentifier = String(format: Constant.AccessibilityIdentifier.image, viewData.isShiny == true ? "shiny" : "default" )
         nameLabel.text = viewData.isShiny == true ? "Shiny \(name)" : name
     }
     

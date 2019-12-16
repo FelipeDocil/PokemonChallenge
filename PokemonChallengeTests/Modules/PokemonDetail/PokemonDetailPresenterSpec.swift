@@ -23,12 +23,24 @@ class PokemonDetailPresenterSpec: QuickSpec {
                 let image = UIImage(named: "bulbasaur_default", in: Bundle(for: PokemonCardSpec.self), compatibleWith: nil)!.pngData()
                 let expectedViewData = PokemonDetailViewData(image: image, name: "bulbasaur", isShiny: false)
                 
+                let fakeEntries = Entry.fakeEntries
                 mockInteractor.stubbedInformationResult = (image: image, name: "bulbasaur")
+                mockInteractor.stubbedFetchEntriesCompletionHandlerResult = (.success(fakeEntries) , ())
 
                 presenter.viewIsReady()
 
                 expect(mockView.invokedSetupInitialStateParameters?.viewData) == expectedViewData
                 expect(mockInteractor.invokedInformation) == true
+                
+                expect(mockInteractor.invokedFetchEntries) == true
+                expect(mockInteractor.invokedFetchEntriesParameters?.identifier) == 1
+                
+                expect(mockView.invokedUpdateEntries).toEventually(equal(true))
+                expect(mockView.invokedUpdateEntriesParameters?.count).toEventually(equal(10))
+                
+                expect(mockInteractor.invokedSave).toEventually(equal(true))
+                expect(mockInteractor.invokedSaveParameters?.identifier).toEventually(equal(1))
+                expect(mockInteractor.invokedSaveParameters?.entries.count).toEventually(equal(24))
             }
         }
     }
@@ -37,8 +49,8 @@ class PokemonDetailPresenterSpec: QuickSpec {
 class MockPokemonDetailInteractor: PokemonDetailInteractorInput {
     var invokedFetchEntries = false
     var invokedFetchEntriesCount = 0
-    var invokedFetchEntriesParameters: (offset: Int, Void)?
-    var invokedFetchEntriesParametersList = [(offset: Int, Void)]()
+    var invokedFetchEntriesParameters: (identifier: Int, Void)?
+    var invokedFetchEntriesParametersList = [(identifier: Int, Void)]()
     var stubbedFetchEntriesCompletionHandlerResult: (Result<[Entry], PokemonDetailInteractorErrors>, Void)?
 
     func fetchEntries(for identifier: Int, completionHandler: @escaping (Result<[Entry], PokemonDetailInteractorErrors>) -> Void) {
@@ -63,6 +75,18 @@ class MockPokemonDetailInteractor: PokemonDetailInteractorInput {
         invokedInformationParameters = (identifier, isShiny)
         invokedInformationParametersList.append((identifier, isShiny))
         return stubbedInformationResult
+    }
+    
+    var invokedSave = false
+    var invokedSaveCount = 0
+    var invokedSaveParameters: (entries: [Entry], identifier: Int)?
+    var invokedSaveParametersList = [(entries: [Entry], identifier: Int)]()
+    
+    func save(entries: [Entry], into identifier: Int) {
+        invokedSave = true
+        invokedSaveCount += 1
+        invokedSaveParameters = (entries, identifier)
+        invokedSaveParametersList.append((entries, identifier))
     }
 }
 

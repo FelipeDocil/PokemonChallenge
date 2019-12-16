@@ -187,7 +187,7 @@ class MockPokemonDetailDatabase: DatabaseServiceInput {
     var invokedPokemonCount = 0
     var invokedPokemonParameters: (identifier: Int, Void)?
     var invokedPokemonParametersList = [(identifier: Int, Void)]()
-    var stubbedPokemonResult: Pokemon!
+    var stubbedPokemonResult: Pokemon?
     
     func pokemon(identifier: Int) -> Pokemon? {
         invokedPokemon = true

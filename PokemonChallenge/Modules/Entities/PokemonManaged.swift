@@ -17,6 +17,7 @@ class PokemonManaged: NSManagedObject {
     @NSManaged var shinyPath: URL
     @NSManaged var image: Data?
     @NSManaged var shiny: Data?
+    @NSManaged var entry: Set<EntryManaged>?
 }
 
 extension PokemonManaged {
@@ -28,6 +29,11 @@ extension PokemonManaged {
         var pokemon = try? jsonDecoder.decode(Pokemon.self, from: pokemonData)
         pokemon?.image = self.image
         pokemon?.shiny = self.shiny
+        
+        if let entryData = try? jsonEncoder.encode(entry) {
+            let entry = try? jsonDecoder.decode([Entry].self, from: entryData)
+            pokemon?.entry = entry ?? []
+        }
         
         return pokemon
     }

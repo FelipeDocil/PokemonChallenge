@@ -108,6 +108,20 @@ class DatabaseServiceSpec: QuickSpec {
                     expect(pokemon).toNot(beNil())
                     expect(pokemon?.name) == "charmander"
                 }
+                
+                it("update entries from existing pokemon") {
+                    self.initDatabase()
+                    let service = DatabaseService(container: self.mockPersistentContainer)
+                    
+                    let entries = Entry.fakeEntries
+                    var pokemon = Pokemon.fakePokemon.first!
+                    pokemon.entry = entries
+                    
+                    let cached = service.insertPokemon(pokemon: pokemon)
+                    
+                    expect(cached).toNot(beNil())
+                    expect(cached?.entry?.isEmpty) == false
+                }
             }
         }
     }

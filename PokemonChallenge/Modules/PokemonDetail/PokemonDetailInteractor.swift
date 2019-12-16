@@ -16,6 +16,7 @@ enum PokemonDetailInteractorErrors: Error {
 protocol PokemonDetailInteractorInput: AnyObject {
     func information(for identifier: Int, isShiny: Bool) -> (image: Data?, name: String)
     func fetchEntries(for identifier: Int, completionHandler: @escaping (Result<[Entry], PokemonDetailInteractorErrors>) -> Void)
+    func save(entries: [Entry], into identifier: Int)
 }
 
 protocol PokemonDetailInteractorOutput: AnyObject {}
@@ -38,11 +39,23 @@ class PokemonDetailInteractor: PokemonDetailInteractorInput {
             completionHandler(.failure(.noPokemon)); return
         }
         
+        if pokemon.entry.isEmpty == false { completionHandler(.success(pokemon.entry)); return }
+        
         services?.networking.entries(for: pokemon.pokedexPath.absoluteString) { result in
             switch result {
             case let .failure(error): completionHandler(.failure(.networking(error)))
             case let .success(entries): completionHandler(.success(entries))
             }
         }
+    }
+    
+    func save(entries: [Entry], into identifier: Int) {
+        guard var pokemon = services?.database.pokemon(identifier: identifier) else {
+            return
+        }
+        
+        pokemon.entry = entries
+        
+        services?.database.insertPokemon(pokemon: pokemon)
     }
 }

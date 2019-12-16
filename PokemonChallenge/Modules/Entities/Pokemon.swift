@@ -16,6 +16,7 @@ struct Pokemon: Codable {
     var shinyPath: URL
     var image: Data?
     var shiny: Data?
+    var entry: [Entry] = []
     
     enum CodingKeys: String, CodingKey {
         case identifier = "id"

@@ -13,6 +13,8 @@ enum Arguments: String {
     
     enum Initial: String {
         case list
+        case detail
+        case detailShiny
     }
     
     enum Networking: String {
@@ -25,7 +27,8 @@ enum Arguments: String {
     
     enum Persistence: String {
         case empty
-        case cached
+        case cachedPokemon
+        case cachedEntry
         case caches
     }
 }
