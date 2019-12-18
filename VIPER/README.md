@@ -26,6 +26,12 @@ More tips on VIPER can be found [here](https://theswiftdev.com/2018/03/12/the-ul
 
 ![diagram](https://i.imgur.com/YHOzL9s.png)
 
+**VIPER Template**
+
+For this project there's a [Xcode template](https://github.com/FelipeDocil/pokemon-challenge/blob/master/Templates/) to automatically create a VIPER Module and reduce the manual boilerplate code.
+
+To install the template locally just copy the `.xctemplate` files at `~/Library/Developer/Xcode/Templates/<custom_folder_name>` and restart your Xcode.
+
 ## Testing
 
 All the tests runs on a iPhone 11 (13.3).
@@ -40,5 +46,4 @@ Greate article about [Gherkin language](https://automationpanda.com/2017/01/30/b
 
 - **Cocoapods**: The decision to use Cocoapods was because I added 3rd Party dependencies to Tests, such as Quick/Nimble and SnapshotTests. It could be done without Quick/Nimble, but I believe SnapshotTest is a valid test.
 - **Swift Package Manager**: In order to support Capriccio I decided to use SPM, also a script was added in `PokemonChallengeUITest` to automatically generate the Gherkin files.
-- **User journey**: The perfect journey I defined as _Search -> Select a Pokemon -> See the details_, this journey is described as one scenario on Gherkin, along with some others.
 - **Persistence**: Decided to use CoreData, created a Service to handle CoreData also decided to create another Entitity to avoid to add CoreData to may other parts of the app, using a separate if a choise in the future to migrate to Realm or maybe a new database Apple launches just a change on this Entity, Service, Coordinator and AppDelegate are required, nothing else.

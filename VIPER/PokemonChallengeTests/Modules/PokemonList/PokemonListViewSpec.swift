@@ -72,14 +72,6 @@ class MockPokemonListPresenter: PokemonListPresenterInput {
         invokedViewIsReadyCount += 1
     }
     
-    var invokedViewDidAppear = false
-    var invokedViewDidAppearCount = 0
-    
-    func viewDidAppear() {
-        invokedViewDidAppear = true
-        invokedViewDidAppearCount += 1
-    }
-    
     var invokedNumberOfItems = false
     var invokedNumberOfItemsCount = 0
     var stubbedNumberOfItemsResult: Int! = 0
