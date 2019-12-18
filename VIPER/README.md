@@ -28,7 +28,7 @@ More tips on VIPER can be found [here](https://theswiftdev.com/2018/03/12/the-ul
 
 **VIPER Template**
 
-For this project there's a [Xcode template](https://github.com/FelipeDocil/pokemon-challenge/blob/master/Templates/) to automatically create a VIPER Module and reduce the manual boilerplate code.
+For this project there's a [Xcode template](https://github.com/FelipeDocil/PokemonChallenge/blob/master/VIPER/Templates/) to automatically create a VIPER Module and reduce the manual boilerplate code.
 
 To install the template locally just copy the `.xctemplate` files at `~/Library/Developer/Xcode/Templates/<custom_folder_name>` and restart your Xcode.
 
@@ -38,7 +38,7 @@ All the tests runs on a iPhone 11 (13.3).
 
 UI Tests are created on using Gherkin language and is stored on `PokemonChallengeUITests/features` folder
 
-A 3rd party library [Capriccio](https://github.com/shibapm/capriccio) generates the Swift code using this [template](https://github.com/FelipeDocil/pokemon-challenge/blob/master/Templates/Capriccio/Gherkin.stencil) to generate the steps.
+A 3rd party library [Capriccio](https://github.com/shibapm/capriccio) generates the Swift code using this [template](https://github.com/FelipeDocil/PokemonChallenge/blob/master/VIPER/Templates/Gherkin.stencil) to generate the steps.
 
 Greate article about [Gherkin language](https://automationpanda.com/2017/01/30/bdd-101-writing-good-gherkin/)
 
