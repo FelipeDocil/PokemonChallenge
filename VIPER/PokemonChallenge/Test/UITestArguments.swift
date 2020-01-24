@@ -10,13 +10,13 @@ import Foundation
 
 enum Arguments: String {
     case uiTest
-    
+
     enum Initial: String {
         case list
         case detail
         case detailShiny
     }
-    
+
     enum Networking: String {
         case noNetwork
         case singlePage
@@ -24,11 +24,10 @@ enum Arguments: String {
         case successPokemon
         case successEntry
     }
-    
+
     enum Persistence: String {
         case empty
-        case cachedPokemon
-        case cachedEntry
-        case caches
+        case initialPokemon
+        case initialEntry
     }
 }

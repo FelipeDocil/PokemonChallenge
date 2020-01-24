@@ -156,6 +156,24 @@ class DatabaseServiceSpec: QuickSpec {
                     expect(item?.shiny).toNot(beNil())
                 }
             }
+
+            context("save entry") {
+                it("saves entry") {
+                    self.initDatabase()
+
+                    let service = DatabaseService(container: self.mockPersistentContainer)
+
+                    let entry = Entry.fakeEntries
+                    var pokemon = Pokemon.fakePokemon.first!
+
+                    service.save(entries: entry, to: pokemon)
+
+                    let object = service.pokemon(identifier: pokemon.identifier)
+
+                    expect(object).toNot(beNil())
+                    expect(object?.entry.isEmpty) == false
+                }
+            }
         }
     }
 

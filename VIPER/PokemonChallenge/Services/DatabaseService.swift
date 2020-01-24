@@ -14,6 +14,7 @@ protocol DatabaseServiceInput {
     func allPokemon() -> [Pokemon]
     func pokemon(identifier: Int) -> Pokemon?
     func save(pokemon: [Pokemon])
+    func save(entries: [Entry], to pokemon: Pokemon)
 }
 
 class DatabaseService: DatabaseServiceInput {
@@ -109,6 +110,33 @@ class DatabaseService: DatabaseServiceInput {
         }
 
         return pokemon
+    }
+
+    func save(entries: [Entry], to pokemon: Pokemon) {
+        let context = backgroundContext
+        context.performAndWait {
+            var objects: [EntryManaged] = []
+            for item in entries {
+                guard let entity = NSEntityDescription.entity(forEntityName: "Entry", in: context),
+                      let object = NSManagedObject(entity: entity, insertInto: context) as? EntryManaged
+                        else { continue }
+
+                object.flavorText = item.flavorText
+                object.language = item.language
+                object.version = item.version
+
+                objects.append(object)
+            }
+
+            let request = NSFetchRequest<PokemonManaged>(entityName: "Pokemon")
+            request.predicate = NSPredicate(format: "identifier = %i", pokemon.identifier)
+            let results = try? context.fetch(request)
+            let pokemon = results?.first
+
+            pokemon?.entry = Set(objects)
+
+            saveChanges(on: context)
+        }
     }
 
     // MARK - Private methods

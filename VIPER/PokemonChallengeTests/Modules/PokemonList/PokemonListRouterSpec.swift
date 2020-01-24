@@ -221,4 +221,16 @@ class MockPokemonListDatabase: DatabaseServiceInput {
         invokedSaveParameters = (pokemon, ())
         invokedSaveParametersList.append((pokemon, ()))
     }
+
+    var invokedSaveEntries = false
+    var invokedSaveEntriesCount = 0
+    var invokedSaveEntriesParameters: (entries: [Entry], pokemon: Pokemon)?
+    var invokedSaveEntriesParametersList = [(entries: [Entry], pokemon: Pokemon)]()
+
+    func save(entries: [Entry], to pokemon: Pokemon) {
+        invokedSaveEntries = true
+        invokedSaveEntriesCount += 1
+        invokedSaveEntriesParameters = (entries, pokemon)
+        invokedSaveEntriesParametersList.append((entries, pokemon))
+    }
 }

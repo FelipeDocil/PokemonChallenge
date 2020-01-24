@@ -1,4 +1,4 @@
-// 
+//
 //  PokemonDetailInteractor.swift
 //  PokemonChallenge
 //
@@ -12,7 +12,7 @@ enum PokemonDetailInteractorErrors: Error {
     case networking(Error)
     case noPokemon
 }
-    
+
 protocol PokemonDetailInteractorInput: AnyObject {
     func information(for identifier: Int, isShiny: Bool) -> (image: Data?, name: String)
     func fetchEntries(for identifier: Int, completionHandler: @escaping (Result<[Entry], PokemonDetailInteractorErrors>) -> Void)
@@ -26,21 +26,21 @@ class PokemonDetailInteractor: PokemonDetailInteractorInput {
     var services: PokemonDetailServices?
 
     // MARK: PokemonDetailInteractorInput
-    
+
     func information(for identifier: Int, isShiny: Bool) -> (image: Data?, name: String) {
         let pokemon = services?.database.pokemon(identifier: identifier)
         let image = isShiny == true ? pokemon?.shiny : pokemon?.image
-        
+
         return (image: image, name: pokemon?.name ?? "")
     }
-    
+
     func fetchEntries(for identifier: Int, completionHandler: @escaping (Result<[Entry], PokemonDetailInteractorErrors>) -> Void) {
         guard let pokemon = services?.database.pokemon(identifier: identifier) else {
             completionHandler(.failure(.noPokemon)); return
         }
-        
+
         if pokemon.entry.isEmpty == false { completionHandler(.success(pokemon.entry)); return }
-        
+
         services?.networking.entries(for: pokemon.pokedexPath.absoluteString) { result in
             switch result {
             case let .failure(error): completionHandler(.failure(.networking(error)))
@@ -48,14 +48,12 @@ class PokemonDetailInteractor: PokemonDetailInteractorInput {
             }
         }
     }
-    
+
     func save(entries: [Entry], into identifier: Int) {
         guard var pokemon = services?.database.pokemon(identifier: identifier) else {
             return
         }
-        
-        pokemon.entry = entries
-        
-        services?.database.insertPokemon(pokemon: pokemon)
+
+        services?.database.save(entries: entries, to: pokemon)
     }
 }

@@ -1,4 +1,4 @@
-// 
+//
 //  PokemonDetailRouterSpec.swift
 //  PokemonChallengeTests
 //
@@ -21,7 +21,7 @@ class PokemonDetailRouterSpec: QuickSpec {
                 let mockServices = PokemonDetailServices(networking: mockNetworking, database: mockDatabase)
 
                 let module = PokemonDetailRouter.build(from: coordinator, services: mockServices, identifier: 1, isShiny: false)
-                
+
                 let view = module as? PokemonDetailView
                 let presenter = view?.presenter as? PokemonDetailPresenter
                 let router = presenter?.router as? PokemonDetailRouter
@@ -137,7 +137,7 @@ class MockPokemonDetailNetworking: NetworkingServiceInput {
 
         completionHandler(.failure(.noNetwork))
     }
-    
+
     var invokedEntries = false
     var invokedEntriesCount = 0
     var invokedEntriesParameters: (urlPath: String, Void)?
@@ -155,45 +155,51 @@ class MockPokemonDetailNetworking: NetworkingServiceInput {
 }
 
 class MockPokemonDetailDatabase: DatabaseServiceInput {
-    var invokedInsertPokemon = false
-    var invokedInsertPokemonCount = 0
-    var invokedInsertPokemonParameters: (pokemon: Pokemon, Void)?
-    var invokedInsertPokemonParametersList = [(pokemon: Pokemon, Void)]()
-    var stubbedInsertPokemonResult: PokemonManaged!
-    let queue = DispatchQueue(label: "Update parameters", attributes: .concurrent)
+    var invokedAllPokemon = false
+    var invokedAllPokemonCount = 0
+    var stubbedAllPokemonResult: [Pokemon]! = []
 
-    func insertPokemon(pokemon: Pokemon) -> PokemonManaged? {
-        queue.sync(flags: .barrier) {
-            invokedInsertPokemon = true
-            invokedInsertPokemonCount += 1
-            invokedInsertPokemonParameters = (pokemon, ())
-            invokedInsertPokemonParametersList.append((pokemon, ()))
-        }
-
-        return stubbedInsertPokemonResult
+    func allPokemon() -> [Pokemon] {
+        invokedAllPokemon = true
+        invokedAllPokemonCount += 1
+        return stubbedAllPokemonResult
     }
 
-    var invokedFetchAllPokemon = false
-    var invokedFetchAllPokemonCount = 0
-    var stubbedFetchAllPokemonResult: [Pokemon]! = []
-
-    func fetchAllPokemon() -> [Pokemon] {
-        invokedFetchAllPokemon = true
-        invokedFetchAllPokemonCount += 1
-        return stubbedFetchAllPokemonResult
-    }
-    
     var invokedPokemon = false
     var invokedPokemonCount = 0
     var invokedPokemonParameters: (identifier: Int, Void)?
     var invokedPokemonParametersList = [(identifier: Int, Void)]()
-    var stubbedPokemonResult: Pokemon?
-    
+    var stubbedPokemonResult: Pokemon!
+
     func pokemon(identifier: Int) -> Pokemon? {
         invokedPokemon = true
         invokedPokemonCount += 1
         invokedPokemonParameters = (identifier, ())
         invokedPokemonParametersList.append((identifier, ()))
         return stubbedPokemonResult
+    }
+
+    var invokedSave = false
+    var invokedSaveCount = 0
+    var invokedSaveParameters: (pokemon: [Pokemon], Void)?
+    var invokedSaveParametersList = [(pokemon: [Pokemon], Void)]()
+
+    func save(pokemon: [Pokemon]) {
+        invokedSave = true
+        invokedSaveCount += 1
+        invokedSaveParameters = (pokemon, ())
+        invokedSaveParametersList.append((pokemon, ()))
+    }
+
+    var invokedSaveEntries = false
+    var invokedSaveEntriesCount = 0
+    var invokedSaveEntriesParameters: (entries: [Entry], pokemon: Pokemon)?
+    var invokedSaveEntriesParametersList = [(entries: [Entry], pokemon: Pokemon)]()
+
+    func save(entries: [Entry], to pokemon: Pokemon) {
+        invokedSaveEntries = true
+        invokedSaveEntriesCount += 1
+        invokedSaveEntriesParameters = (entries, pokemon)
+        invokedSaveEntriesParametersList.append((entries, pokemon))
     }
 }
