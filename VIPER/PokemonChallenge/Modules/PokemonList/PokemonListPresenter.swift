@@ -1,4 +1,4 @@
-// 
+//
 //  PokemonListPresenter.swift
 //  PokemonChallenge
 //
@@ -20,11 +20,11 @@ protocol PokemonListPresenterInput: AnyObject {
 
 class PokemonListPresenter: PokemonListPresenterInput, PokemonListInteractorOutput, PokemonListRouterOutput {
     var dataSource: [Pokemon] = []
-    
+
     weak var view: PokemonListViewInput?
     var interactor: PokemonListInteractorInput
     var router: PokemonListRouterInput
-    
+
     private var ignoreFetch = false
 
     init(interactor: PokemonListInteractorInput, router: PokemonListRouterInput) {
@@ -36,81 +36,79 @@ class PokemonListPresenter: PokemonListPresenterInput, PokemonListInteractorOutp
 
     func viewIsReady() {
         view?.setupInitialState()
-        
+
         nextPokemon()
     }
-    
+
     func numberOfItems() -> Int {
-        return dataSource.count
+        dataSource.count
     }
-    
-    func cardInformation(for index: Int) -> PokemonListViewData {        
+
+    func cardInformation(for index: Int) -> PokemonListViewData {
         let pokemon = dataSource[index]
         let viewData = PokemonListViewData(identifier: pokemon.identifier,
                                            image: pokemon.image,
                                            shiny: pokemon.shiny,
                                            name: pokemon.name)
-        
+
         return viewData
     }
-    
+
     func reachEndOfPage() {
         nextPokemon()
     }
-    
+
     func didSelected(row: Int, switchSelected: Bool) {
         let pokemon = dataSource[row]
         router.presentDetail(for: pokemon.identifier, isShiny: switchSelected)
     }
-    
+
     func search(for term: String) {
         let localDatasource = interactor.localPokemon()
-        
+
         if term.isEmpty == true {
             ignoreFetch = false
-            dataSource = order(Set(localDatasource))
+            dataSource = localDatasource
             view?.reloadList()
             return
         }
-        
+
         let filtered = localDatasource.filter { pokemon -> Bool in
-            return pokemon.name.lowercased().contains(term.lowercased())
+            pokemon.name.lowercased().contains(term.lowercased())
         }
-        
+
         ignoreFetch = true
-        dataSource = order(Set(filtered))
+        dataSource = filtered
         view?.reloadList()
     }
-    
+
     func updateImages(for identifier: Int) {
         guard let pokemon = dataSource.first(where: { $0.identifier == identifier }) else { return }
-        
+
         let queue = DispatchQueue(label: "Update dataSource", attributes: .concurrent)
         interactor.images(for: pokemon) { result in
             if case let .success(pokemonWithImage) = result {
                 queue.async(flags: .barrier) {
                     self.updateDatasource(with: pokemonWithImage)
                     self.view?.reloadList()
-                    self.interactor.save(pokemon: [pokemonWithImage]) {}
+                    self.interactor.save(pokemon: [pokemonWithImage])
                 }
             }
         }
     }
-    
+
     // MARK: Private methods
-    
+
     private func nextPokemon() {
         if ignoreFetch { return }
-        
+
         ignoreFetch = true
         interactor.pokemon { result in
             if case let .success(pokemon) = result {
-                let newDatasource = pokemon.union(Set(self.dataSource))
-                let isBigger = newDatasource.count > self.dataSource.count
-                
-                self.dataSource = self.order(newDatasource)
-                
-                // Update View if it changed
+                let isBigger = pokemon.count > self.dataSource.count
+                self.dataSource = pokemon
+
+                // Update View if it has changed
                 if isBigger == true {
                     self.view?.reloadList()
                     self.ignoreFetch = false
@@ -118,11 +116,11 @@ class PokemonListPresenter: PokemonListPresenterInput, PokemonListInteractorOutp
             }
         }
     }
-    
+
     private func order(_ pokemon: Set<Pokemon>) -> [Pokemon] {
-        return pokemon.sorted { $0.identifier <= $1.identifier }
+        pokemon.sorted { $0.identifier <= $1.identifier }
     }
-    
+
     private func updateDatasource(with pokemon: Pokemon) {
         if let index = dataSource.firstIndex(where: { $0.identifier == pokemon.identifier } ) {
             dataSource[index] = pokemon

@@ -105,7 +105,7 @@ class MockPokemonListNetworking: NetworkingServiceInput {
     var invokedPokemonCount = 0
     var invokedPokemonParameters: (urlPath: String, Void)?
     var invokedPokemonParametersList = [(urlPath: String, Void)]()
-    var shouldReturnSuccess = false
+    var stubbedPokemonResultAutomatically = false
     let queuePokemon = DispatchQueue(label: "update parameters list for pokemon", attributes: .concurrent)
 
     func pokemon(for urlPath: String, completionHandler: @escaping (Result<Pokemon, NetworkingServiceError>) -> Void) {
@@ -117,7 +117,7 @@ class MockPokemonListNetworking: NetworkingServiceInput {
             invokedPokemonParametersList.append((urlPath, ()))
         }
 
-        if shouldReturnSuccess {
+        if stubbedPokemonResultAutomatically {
             let identifier = Int(urlPath.split(separator: "/").last!)!
             let pokemon = Pokemon.fakePokemon.first(where: { $0.identifier == identifier })
             completionHandler(.success(pokemon!))
@@ -155,7 +155,7 @@ class MockPokemonListNetworking: NetworkingServiceInput {
 
         completionHandler(.failure(.noNetwork))
     }
-    
+
     var invokedEntries = false
     var invokedEntriesCount = 0
     var invokedEntriesParameters: (urlPath: String, Void)?
@@ -173,45 +173,52 @@ class MockPokemonListNetworking: NetworkingServiceInput {
 }
 
 class MockPokemonListDatabase: DatabaseServiceInput {
-    var invokedInsertPokemon = false
-    var invokedInsertPokemonCount = 0
-    var invokedInsertPokemonParameters: (pokemon: Pokemon, Void)?
-    var invokedInsertPokemonParametersList = [(pokemon: Pokemon, Void)]()
-    var stubbedInsertPokemonResult: PokemonManaged!
-    let queue = DispatchQueue(label: "Update parameters", attributes: .concurrent)
+    var invokedAllPokemon = false
+    var invokedAllPokemonCount = 0
+    var stubbedAllPokemonResult: [Pokemon]! = []
+    var stubbedAllPokemonResultAutomatically = false
 
-    func insertPokemon(pokemon: Pokemon) -> PokemonManaged? {
-        queue.sync(flags: .barrier) {
-            invokedInsertPokemon = true
-            invokedInsertPokemonCount += 1
-            invokedInsertPokemonParameters = (pokemon, ())
-            invokedInsertPokemonParametersList.append((pokemon, ()))
+    func allPokemon() -> [Pokemon] {
+        invokedAllPokemon = true
+        invokedAllPokemonCount += 1
+        if let cached = invokedSaveParameters?.pokemon,
+           cached.isEmpty == false, stubbedAllPokemonResultAutomatically == true {
+            var filtered: [Pokemon] = []
+
+            for element in cached {
+                let existing = filtered.filter { element.identifier == $0.identifier }
+                if existing.isEmpty { filtered.append(element) }
+            }
+
+            return filtered.sorted { $0.identifier <= $1.identifier }
         }
 
-        return stubbedInsertPokemonResult
+        return stubbedAllPokemonResult
     }
 
-    var invokedFetchAllPokemon = false
-    var invokedFetchAllPokemonCount = 0
-    var stubbedFetchAllPokemonResult: [Pokemon]! = []
-
-    func fetchAllPokemon() -> [Pokemon] {
-        invokedFetchAllPokemon = true
-        invokedFetchAllPokemonCount += 1
-        return stubbedFetchAllPokemonResult
-    }
-    
     var invokedPokemon = false
     var invokedPokemonCount = 0
     var invokedPokemonParameters: (identifier: Int, Void)?
     var invokedPokemonParametersList = [(identifier: Int, Void)]()
     var stubbedPokemonResult: Pokemon!
-    
+
     func pokemon(identifier: Int) -> Pokemon? {
         invokedPokemon = true
         invokedPokemonCount += 1
         invokedPokemonParameters = (identifier, ())
         invokedPokemonParametersList.append((identifier, ()))
         return stubbedPokemonResult
+    }
+
+    var invokedSave = false
+    var invokedSaveCount = 0
+    var invokedSaveParameters: (pokemon: [Pokemon], Void)?
+    var invokedSaveParametersList = [(pokemon: [Pokemon], Void)]()
+
+    func save(pokemon: [Pokemon]) {
+        invokedSave = true
+        invokedSaveCount += 1
+        invokedSaveParameters = (pokemon, ())
+        invokedSaveParametersList.append((pokemon, ()))
     }
 }
