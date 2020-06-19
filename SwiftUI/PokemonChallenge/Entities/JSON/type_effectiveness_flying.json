@@ -1,0 +1,38 @@
+{
+    "effectiveness": {
+        "super": [
+            {
+                "type": "electric",
+                "value": 2
+            },
+            {
+                "type": "ice",
+                "value": 2
+            },
+            {
+                "type": "rock",
+                "value": 2
+            }
+        ],
+        "less": [
+            {
+                "type": "grass",
+                "value": 0.5
+            },
+            {
+                "type": "fighting",
+                "value": 0.5
+            },
+            {
+                "type": "bug",
+                "value": 0.5
+            }
+        ],
+        "zero": [
+            {
+                "type": "ground",
+                "value": 0
+            }
+        ]
+    }
+}

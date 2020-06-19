@@ -1,0 +1,37 @@
+{
+    "effectiveness": {
+        "super": [
+            {
+                "type": "ice",
+                "value": 2
+            },
+            {
+                "type": "dragon",
+                "value": 2
+            },
+            {
+                "type": "fairy",
+                "value": 2
+            }
+        ],
+        "less": [
+            {
+                "type": "fire",
+                "value": 0.5
+            },
+            {
+                "type": "water",
+                "value": 0.5
+            },
+            {
+                "type": "grass",
+                "value": 0.5
+            },
+            {
+                "type": "electric",
+                "value": 0.5
+            }
+        ],
+        "zero": []
+    }
+}

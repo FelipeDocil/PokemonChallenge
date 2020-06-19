@@ -1,0 +1,34 @@
+{
+    "effectiveness": {
+        "super": [
+            {
+                "type": "fighting",
+                "value": 2
+            },
+            {
+                "type": "bug",
+                "value": 2
+            },
+            {
+                "type": "fairy",
+                "value": 2
+            }
+        ],
+        "less": [
+            {
+                "type": "ghost",
+                "value": 0.5
+            },
+            {
+                "type": "dark",
+                "value": 0.5
+            }
+        ],
+        "zero": [
+            {
+                "type": "psychic",
+                "value": 0
+            }
+        ]
+    }
+}

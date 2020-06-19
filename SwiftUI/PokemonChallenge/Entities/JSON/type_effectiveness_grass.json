@@ -1,0 +1,45 @@
+{
+    "effectiveness": {
+        "super": [
+            {
+                "type": "fire",
+                "value": 2
+            },
+            {
+                "type": "ice",
+                "value": 2
+            },
+            {
+                "type": "poison",
+                "value": 2
+            },
+            {
+                "type": "flying",
+                "value": 2
+            },
+            {
+                "type": "bug",
+                "value": 2
+            }
+        ],
+        "less": [
+            {
+                "type": "water",
+                "value": 0.5
+            },
+            {
+                "type": "grass",
+                "value": 0.5
+            },
+            {
+                "type": "electric",
+                "value": 0.5
+            },
+            {
+                "type": "ground",
+                "value": 0.5
+            }
+        ],
+        "zero": []
+    }
+}

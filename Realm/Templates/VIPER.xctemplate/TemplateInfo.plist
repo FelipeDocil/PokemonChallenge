@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AllowedTypes</key>
+	<array>
+		<string>public.swift-source</string>
+	</array>
+	<key>Platforms</key>
+	<array>
+		<string>com.apple.platform.iphoneos</string>
+	</array>
+	<key>DefaultCompletionName</key>
+	<string>SwiftViperModule</string>
+	<key>Description</key>
+	<string>Basic Swift VIPER module template. Creates View, Interactor, Presenter, Router with protocols.</string>
+	<key>Kind</key>
+	<string>Xcode.IDEKit.TextSubstitutionFileTemplateKind</string>
+	<key>MainTemplateFile</key>
+	<string>___FILEBASENAME___</string>
+	<key>SortOrder</key>
+	<integer>1</integer>
+	<key>Options</key>
+	<array>
+		<dict>
+			<key>Identifier</key>
+			<string>productName</string>
+			<key>Required</key>
+			<string>true</string>
+			<key>Name</key>
+			<string>Name of the Module:</string>
+			<key>Description</key>
+			<string>The name of the Module to create</string>
+			<key>Type</key>
+			<string>text</string>
+		</dict>
+	</array>
+	<key>Template Author</key>
+	<string>Felipe Docil</string>
+</dict>
+</plist>

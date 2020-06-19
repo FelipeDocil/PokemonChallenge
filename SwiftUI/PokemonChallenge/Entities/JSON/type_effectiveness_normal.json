@@ -1,0 +1,17 @@
+{
+    "effectiveness": {
+        "super": [
+            {
+                "type": "fighting",
+                "value": 2
+            }
+        ],
+        "less": [],
+        "zero": [
+            {
+                "type": "ghost",
+                "value": 0
+            }
+        ]
+    }
+}

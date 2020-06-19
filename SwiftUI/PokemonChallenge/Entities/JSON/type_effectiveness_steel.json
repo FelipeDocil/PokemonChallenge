@@ -1,0 +1,74 @@
+{
+    "effectiveness": {
+        "super": [
+            {
+                "type": "fire",
+                "value": 2
+            },
+            {
+                "type": "fighting",
+                "value": 2
+            },
+            {
+                "type": "ground",
+                "value": 2
+            }
+        ],
+        "less": [
+            {
+                "type": "normal",
+                "value": 0.5
+            },
+            {
+                "type": "grass",
+                "value": 0.5
+            },
+            {
+                "type": "ice",
+                "value": 0.5
+            },
+            {
+                "type": "flying",
+                "value": 0.5
+            },
+            {
+                "type": "psychic",
+                "value": 0.5
+            },
+            {
+                "type": "bug",
+                "value": 0.5
+            },
+            {
+                "type": "rock",
+                "value": 0.5
+            },
+            {
+                "type": "ghost",
+                "value": 0.5
+            },
+            {
+                "type": "dragon",
+                "value": 0.5
+            },
+            {
+                "type": "dark",
+                "value": 0.5
+            },
+            {
+                "type": "steel",
+                "value": 0.5
+            },
+            {
+                "type": "fairy",
+                "value": 0.5
+            }
+        ],
+        "zero": [
+            {
+                "type": "poison",
+                "value": 0
+            }
+        ]
+    }
+}

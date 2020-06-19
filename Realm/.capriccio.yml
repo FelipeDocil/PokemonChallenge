@@ -1,0 +1,5 @@
+source: PokemonChallengeUITests/features
+output: PokemonChallengeUITests/GeneratedSteps
+template: Templates/Gherkin.stencil
+includedTags:
+  - ios

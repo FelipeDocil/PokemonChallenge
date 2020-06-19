@@ -1,0 +1,33 @@
+{
+    "effectiveness": {
+        "super": [
+            {
+                "type": "fire",
+                "value": 2
+            },
+            {
+                "type": "flying",
+                "value": 2
+            },
+            {
+                "type": "rock",
+                "value": 2
+            }
+        ],
+        "less": [
+            {
+                "type": "grass",
+                "value": 0.5
+            },
+            {
+                "type": "fighting",
+                "value": 0.5
+            },
+            {
+                "type": "ground",
+                "value": 0.5
+            }
+        ],
+        "zero": []
+    }
+}

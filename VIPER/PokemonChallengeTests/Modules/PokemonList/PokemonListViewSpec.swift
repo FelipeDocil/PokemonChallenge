@@ -1,4 +1,4 @@
-// 
+//
 //  PokemonListViewSpec.swift
 //  PokemonChallengeTests
 //
@@ -27,7 +27,7 @@ class PokemonListViewSpec: QuickSpec {
                             shiny: UIImage(named: "squirtle_shiny", in: Bundle(for: PokemonCardSpec.self), compatibleWith: nil)!.pngData(),
                             name: "Squirtle")
     ]
-    
+
     override func spec() {
         describe("PokemonListViewSpec") {
             beforeSuite {
@@ -38,10 +38,10 @@ class PokemonListViewSpec: QuickSpec {
                 let mockPresenter = MockPokemonListPresenter()
                 mockPresenter.stubbedNumberOfItemsResult = self.mockDataSource.count
                 mockPresenter.stubbedCardInformationResult = self.mockDataSource
-                
+
                 let view = PokemonListView(presenter: mockPresenter)
                 view.setupInitialState()
-                
+
                 let navigationController = UINavigationController(rootViewController: view)
 
                 record = false
@@ -58,36 +58,36 @@ class PokemonListViewSpec: QuickSpec {
 class MockPokemonListPresenter: PokemonListPresenterInput {
     var invokedReachEndOfPage = false
     var invokedReachEndOfPageCount = 0
-    
-    func reachEndOfPage() {
+
+    func loadNewPokemon() {
         invokedReachEndOfPage = true
         invokedReachEndOfPageCount += 1
     }
-    
+
     var invokedViewIsReady = false
     var invokedViewIsReadyCount = 0
-    
+
     func viewIsReady() {
         invokedViewIsReady = true
         invokedViewIsReadyCount += 1
     }
-    
+
     var invokedNumberOfItems = false
     var invokedNumberOfItemsCount = 0
     var stubbedNumberOfItemsResult: Int! = 0
-    
+
     func numberOfItems() -> Int {
         invokedNumberOfItems = true
         invokedNumberOfItemsCount += 1
         return stubbedNumberOfItemsResult
     }
-    
+
     var invokedCardInformation = false
     var invokedCardInformationCount = 0
     var invokedCardInformationParameters: (index: Int, Void)?
     var invokedCardInformationParametersList = [(index: Int, Void)]()
     var stubbedCardInformationResult: [PokemonListViewData] = []
-    
+
     func cardInformation(for index: Int) -> PokemonListViewData {
         invokedCardInformation = true
         invokedCardInformationCount += 1
@@ -95,31 +95,31 @@ class MockPokemonListPresenter: PokemonListPresenterInput {
         invokedCardInformationParametersList.append((index, ()))
         return stubbedCardInformationResult[index]
     }
-    
+
     var invokedDidSelected = false
     var invokedDidSelectedCount = 0
     var invokedDidSelectedParameters: (row: Int, switchSelected: Bool, Void)?
     var invokedDidSelectedParametersList = [(row: Int, switchSelected: Bool, Void)]()
-    
+
     func didSelected(row: Int, switchSelected: Bool) {
         invokedDidSelected = true
         invokedDidSelectedCount += 1
         invokedDidSelectedParameters = (row, switchSelected, ())
         invokedDidSelectedParametersList.append((row, switchSelected, ()))
     }
-    
+
     var invokedSearch = false
     var invokedSearchCount = 0
     var invokedSearchParameters: (term: String, Void)?
     var invokedSearchParametersList = [(term: String, Void)]()
-    
+
     func search(for term: String) {
         invokedSearch = true
         invokedSearchCount += 1
         invokedSearchParameters = (term, ())
         invokedSearchParametersList.append((term, ()))
     }
-    
+
     func updateImages(for identifier: Int) {
         fatalError("Dummy implementation")
     }

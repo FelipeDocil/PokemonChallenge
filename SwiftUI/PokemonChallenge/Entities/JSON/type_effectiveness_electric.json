@@ -1,0 +1,21 @@
+{
+    "effectiveness": {
+        "super": [
+            {
+                "type": "ground",
+                "value": 2
+            }
+        ],
+        "less": [
+            {
+                "type": "electric",
+                "value": 0.5
+            },
+            {
+                "type": "flying",
+                "value": 0.5
+            }
+        ],
+        "zero": []
+    }
+}

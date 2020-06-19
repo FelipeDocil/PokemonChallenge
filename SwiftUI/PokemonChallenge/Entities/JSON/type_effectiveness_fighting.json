@@ -1,0 +1,33 @@
+{
+    "effectiveness": {
+        "super": [
+            {
+                "type": "flying",
+                "value": 2
+            },
+            {
+                "type": "psychic",
+                "value": 2
+            },
+            {
+                "type": "fairy",
+                "value": 2
+            }
+        ],
+        "less": [
+            {
+                "type": "bug",
+                "value": 0.5
+            },
+            {
+                "type": "rock",
+                "value": 0.5
+            },
+            {
+                "type": "dark",
+                "value": 0.5
+            }
+        ],
+        "zero": []
+    }
+}

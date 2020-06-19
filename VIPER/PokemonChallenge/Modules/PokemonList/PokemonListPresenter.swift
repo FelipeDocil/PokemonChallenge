@@ -14,7 +14,7 @@ protocol PokemonListPresenterInput: AnyObject {
     func cardInformation(for index: Int) -> PokemonListViewData
     func didSelected(row: Int, switchSelected: Bool)
     func search(for term: String)
-    func reachEndOfPage()
+    func loadNewPokemon()
     func updateImages(for identifier: Int)
 }
 
@@ -54,7 +54,7 @@ class PokemonListPresenter: PokemonListPresenterInput, PokemonListInteractorOutp
         return viewData
     }
 
-    func reachEndOfPage() {
+    func loadNewPokemon() {
         nextPokemon()
     }
 
@@ -114,6 +114,8 @@ class PokemonListPresenter: PokemonListPresenterInput, PokemonListInteractorOutp
                     self.ignoreFetch = false
                 }
             }
+
+            self.view?.stopLoading()
         }
     }
 

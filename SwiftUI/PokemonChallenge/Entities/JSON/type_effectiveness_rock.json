@@ -1,0 +1,45 @@
+{
+    "effectiveness": {
+        "super": [
+            {
+                "type": "water",
+                "value": 2
+            },
+            {
+                "type": "grass",
+                "value": 2
+            },
+            {
+                "type": "fighting",
+                "value": 2
+            },
+            {
+                "type": "ground",
+                "value": 2
+            },
+            {
+                "type": "steel",
+                "value": 2
+            }
+        ],
+        "less": [
+            {
+                "type": "normal",
+                "value": 0.5
+            },
+            {
+                "type": "fire",
+                "value": 0.5
+            },
+            {
+                "type": "poison",
+                "value": 0.5
+            },
+            {
+                "type": "flying",
+                "value": 0.5
+            }
+        ],
+        "zero": []
+    }
+}

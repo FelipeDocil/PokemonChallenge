@@ -1,0 +1,34 @@
+{
+    "effectiveness": {
+        "super": [
+            {
+                "type": "water",
+                "value": 2
+            },
+            {
+                "type": "grass",
+                "value": 2
+            },
+            {
+                "type": "ice",
+                "value": 2
+            }
+        ],
+        "less": [
+            {
+                "type": "poison",
+                "value": 0.5
+            },
+            {
+                "type": "rock",
+                "value": 0.5
+            }
+        ],
+        "zero": [
+            {
+                "type": "electric",
+                "value": 0
+            }
+        ]
+    }
+}

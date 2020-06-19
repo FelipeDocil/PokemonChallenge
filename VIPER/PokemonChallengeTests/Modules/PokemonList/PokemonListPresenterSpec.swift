@@ -75,7 +75,7 @@ class PokemonListPresenterSpec: QuickSpec {
             self.mockInteractor.stubbedPokemonCompletionHandlerResult = (.success(pokemonList), ())
             self.mockInteractor.stubbedImagesCompletionHandlerResult = (.success(pokemonWithImage), ())
 
-            self.presenter.reachEndOfPage()
+            self.presenter.loadNewPokemon()
 
             expect(self.mockInteractor.invokedPokemon) == true
             expect(self.presenter.dataSource.count).toEventually(equal(10))
@@ -117,7 +117,7 @@ class PokemonListPresenterSpec: QuickSpec {
             expect(self.presenter.dataSource.count) == 3
             expect(self.mockView.invokedReloadList) == true
 
-            self.presenter.reachEndOfPage()
+            self.presenter.loadNewPokemon()
 
             expect(self.mockInteractor.invokedPokemon) == false
         }
